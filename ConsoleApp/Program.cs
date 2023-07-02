@@ -1,4 +1,7 @@
-﻿using MinesweeperClassLibrary;
+﻿//Written by Jess Larson
+//7/2/23
+
+using MinesweeperClassLibrary;
 internal static class Program
 {
     static void Main()
