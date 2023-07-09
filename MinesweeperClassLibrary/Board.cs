@@ -15,11 +15,12 @@ namespace MinesweeperClassLibrary
         public int Size { get; set; }
         public Cell[,] Grid { get; set; }
         public int Difficulty { get; set; }
+
         public Board() 
         {
         }
 
-        //primary constructor that sets up the board completely
+        //primary constructor that sets up the board completely: size and difficulty(0%-100% bombs)
         public Board(int size, int difficulty)
         {
             //check for correct difficulty parameters
@@ -93,40 +94,154 @@ namespace MinesweeperClassLibrary
         //Got help from ChatGPT on creating the boarders
         public void PrintBoard()
         {
+            Console.ForegroundColor = ConsoleColor.Gray;
             // Print column numbers
-            Console.Write("   ");
             for (int col = 0; col < Size; col++)
             {
-                Console.Write(col + "   ");
+                if (col < 10) Console.Write($"  {col} ");
+                else Console.Write($"  {col}");
             }
             Console.WriteLine();
 
             // Print top border line
-            Console.WriteLine("  +" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
+            Console.WriteLine("+" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
 
             // Print board rows
             for (int row = 0; row < Size; row++)
             {
-                Console.Write(row + " |"); // Print row number and left border
+                Console.Write("|"); // Print left border
 
                 for (int col = 0; col < Size; col++)
                 {
                     Cell cell = Grid[row, col];
                     if (cell.Live)
                     {
+                        //change console color
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.Write(" X "); // Print a live cell as "X"
+                        Console.ForegroundColor = ConsoleColor.Gray;
+
                     }
+                    else if (cell.LiveNeighbors == 0) Console.Write("   ");//leave cells blank that have 0 live neighbors for better visibility
                     else
                     {
+                        //change console color
+                        Console.ForegroundColor = ConsoleColor.Blue; 
                         Console.Write(" " + cell.LiveNeighbors + " "); // Print the count of live neighbors
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        
                     }
+                    
                     Console.Write("|"); // Print cell separator
                 }
-                Console.WriteLine();
+                Console.WriteLine($" {row}");
 
                 // Print inner horizontal line
-                Console.WriteLine("  +" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
+                Console.WriteLine("+" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
             }
+        }
+
+        //display either the number of live neighbors or an empty square if there are no live neighbors.
+        //If a cell has not been visited, print a question mark.
+        public void PrintBoardDuringGame()
+        {
+            // Print column numbers
+            for (int col = 0; col < Size; col++)
+            {
+                if (col < 10) Console.Write($"  {col} ");
+                else Console.Write($"  {col}");
+            }
+            Console.WriteLine();
+
+            // Print top border line
+            Console.WriteLine("+" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
+
+            for (int row = 0; row < Size; row++)
+            {
+                Console.Write("|"); // Print left border
+
+                for (int col = 0; col < Size; col++)
+                {
+                    if (Grid[row, col].Visited)
+                    {
+                        //if cell is visited and live neighbors = 0, then leave blank, else print the live neighbors number
+                        if (Grid[row, col].LiveNeighbors == 0) Console.Write("   ");
+                        else if (!Grid[row, col].Live)
+                        {
+                            //change console color
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Console.Write($" {Grid[row, col].LiveNeighbors} ");
+
+                            //change color back to normal
+                            Console.ForegroundColor = ConsoleColor.Gray;
+                        }
+                    }
+                    //if not visited print '?'
+                    else if (!Grid[row, col].Visited) Console.Write(" ? ");
+
+                    Console.Write("|"); // Print cell separator
+                }
+                Console.WriteLine($" {row}");
+
+                // Print inner horizontal line
+                Console.WriteLine("+" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
+            }
+ 
+        }
+
+        //Check if selected cell is a live bomb
+        //not using right now
+        public bool CheckForLiveBomb(Cell cell)
+        {
+            if(cell.Live) return true;
+            return false;
+        }
+
+        //recursive method to show all of the surrounding cells that boarder the recent cell that was visited
+        //and continue to mark them as visited as long as they boarder a cell that has 0 live neighbors
+        public void SearchForSurroundingZeros(Cell cell)
+        {
+            //first, mark the cell as visited
+            cell.Visited = true;
+
+            //if the cell has any live neighbors, then return
+            if (cell.LiveNeighbors != 0) return;
+
+            //else continue to call the SearchForSurroundingZeros on the cells and mark as visited
+            
+            //mark surrounding as visited and search them for 0 neighbors
+            for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
+            {
+                for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
+                {
+                    //ensure row and col are within board paramaters and it is not comparing the cell to itself
+                    if (row >= 0 && row < Size && col >= 0 && col < Size && Grid[row,col] != cell && Grid[row, col].Visited == false)
+                    {
+                        //catch index out of range
+                        try
+                        {
+                            Grid[row, col].Visited = true;
+
+                            //if 0 neighbors, then call the method recursively on that cell too
+                            if (Grid[row, col].LiveNeighbors == 0) SearchForSurroundingZeros(Grid[row, col]);
+                        }
+                        catch (IndexOutOfRangeException){}
+                    }
+                }
+            }
+        }
+
+        //check for winner
+        public bool CheckForWinner()
+        {
+            bool win = false;
+
+            foreach (var cell in Grid)
+            {
+                if (cell.Live) continue;//skip bombs
+                if (!cell.Visited) return false;//if not visited, then no winner yet
+            }
+            return true;
         }
     }
 }
