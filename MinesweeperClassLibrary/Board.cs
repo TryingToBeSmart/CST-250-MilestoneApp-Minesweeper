@@ -177,7 +177,12 @@ namespace MinesweeperClassLibrary
                         }
                     }
                     //if not visited print '?'
-                    else if (!Grid[row, col].Visited) Console.Write(" ? ");
+                    else if (!Grid[row, col].Visited)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write(" ? ");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
 
                     Console.Write("|"); // Print cell separator
                 }
@@ -199,7 +204,7 @@ namespace MinesweeperClassLibrary
 
         //recursive method to show all of the surrounding cells that boarder the recent cell that was visited
         //and continue to mark them as visited as long as they boarder a cell that has 0 live neighbors
-        public void SearchForSurroundingZeros(Cell cell)
+        public void FloodFill(Cell cell)
         {
             //first, mark the cell as visited
             cell.Visited = true;
@@ -207,26 +212,18 @@ namespace MinesweeperClassLibrary
             //if the cell has any live neighbors, then return
             if (cell.LiveNeighbors != 0) return;
 
-            //else continue to call the SearchForSurroundingZeros on the cells and mark as visited
-            
-            //mark surrounding as visited and search them for 0 neighbors
+            //else continue to call the FloodFill on the surrounding cells
             for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
             {
                 for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
                 {
-                    //ensure row and col are within board paramaters and it is not comparing the cell to itself
-                    if (row >= 0 && row < Size && col >= 0 && col < Size && Grid[row,col] != cell && Grid[row, col].Visited == false)
-                    {
-                        //catch index out of range
-                        try
-                        {
-                            Grid[row, col].Visited = true;
+                    //ensure row and col are within board paramaters,
+                    //it is not comparing the cell to itself, and it is was not visited before
+                    if (row >= 0 && row < Size && col >= 0 && col < Size && 
+                        Grid[row,col] != cell && Grid[row, col].Visited == false)
 
-                            //if 0 neighbors, then call the method recursively on that cell too
-                            if (Grid[row, col].LiveNeighbors == 0) SearchForSurroundingZeros(Grid[row, col]);
-                        }
-                        catch (IndexOutOfRangeException){}
-                    }
+                        //call FloodFill again
+                        FloodFill(Grid[row, col]);
                 }
             }
         }

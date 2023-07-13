@@ -48,7 +48,7 @@ internal static class Program
             //else just mark as visited.
             else
             {
-                board.SearchForSurroundingZeros(board.Grid[row, col]);
+                board.FloodFill(board.Grid[row, col]);
             }
                         
             //check for winner

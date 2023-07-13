@@ -24,25 +24,7 @@ namespace MinesweeperClassLibrary
         public int LiveNeighbors { get; set; }
 
         //primary constructor that is called by the Board class
-        public Cell(int row, int col)
-        {
-            Row = row;
-            Col = col;
-            Visited = false;
-            Live = false;
-            LiveNeighbors = 0;
-        }
-
-        public Cell()
-        {
-            Row = -1;
-            Col = -1;
-            Visited = false;
-            Live = false;
-            LiveNeighbors = 0;
-        }
-
-        public Cell(int row, int col, bool visited, bool live, int liveNeighbors)
+        public Cell(int row = -1, int col = -1, bool visited = false, bool live = false, int liveNeighbors = 0)
         {
             Row = row;
             Col = col;
