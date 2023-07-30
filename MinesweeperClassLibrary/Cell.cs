@@ -23,14 +23,18 @@ namespace MinesweeperClassLibrary
         //+1 for every neighbor that is a bomb
         public int LiveNeighbors { get; set; }
 
+        //flag true or false
+        public bool Flag { get; set; }
+
         //primary constructor that is called by the Board class
-        public Cell(int row = -1, int col = -1, bool visited = false, bool live = false, int liveNeighbors = 0)
+        public Cell(int row = -1, int col = -1, bool visited = false, bool live = false, int liveNeighbors = 0, bool flag = false)
         {
             Row = row;
             Col = col;
             Visited = visited;
             Live = live;
             LiveNeighbors = liveNeighbors;
+            Flag = flag;
         }
     }
 }

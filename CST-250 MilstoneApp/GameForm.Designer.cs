@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             MenuButton = new Button();
             panel1 = new Panel();
+            TimerLabel = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // MenuButton
@@ -43,7 +46,7 @@
             MenuButton.FlatStyle = FlatStyle.Flat;
             MenuButton.Font = new Font("Segoe UI", 21.75F, FontStyle.Regular, GraphicsUnit.Point);
             MenuButton.ForeColor = Color.Lime;
-            MenuButton.Location = new Point(115, 430);
+            MenuButton.Location = new Point(212, 430);
             MenuButton.Name = "MenuButton";
             MenuButton.Size = new Size(178, 68);
             MenuButton.TabIndex = 0;
@@ -57,6 +60,23 @@
             panel1.Size = new Size(420, 420);
             panel1.TabIndex = 1;
             // 
+            // TimerLabel
+            // 
+            TimerLabel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            TimerLabel.AutoSize = true;
+            TimerLabel.Font = new Font("Segoe UI", 21.75F, FontStyle.Regular, GraphicsUnit.Point);
+            TimerLabel.ForeColor = Color.LimeGreen;
+            TimerLabel.Location = new Point(0, 444);
+            TimerLabel.Name = "TimerLabel";
+            TimerLabel.Size = new Size(33, 40);
+            TimerLabel.TabIndex = 2;
+            TimerLabel.Text = "0";
+            TimerLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // timer1
+            // 
+            timer1.Tick += timer1_Tick;
+            // 
             // GameForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -64,6 +84,7 @@
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = SystemColors.ActiveCaptionText;
             ClientSize = new Size(419, 510);
+            Controls.Add(TimerLabel);
             Controls.Add(panel1);
             Controls.Add(MenuButton);
             ForeColor = SystemColors.ButtonFace;
@@ -71,11 +92,14 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Minesweeper";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private Button MenuButton;
         private Panel panel1;
+        private Label TimerLabel;
+        private System.Windows.Forms.Timer timer1;
     }
 }

@@ -141,6 +141,7 @@ namespace MinesweeperClassLibrary
             }
         }
 
+        //for console game
         //display either the number of live neighbors or an empty square if there are no live neighbors.
         //If a cell has not been visited, print a question mark.
         public void PrintBoardDuringGame()
@@ -204,27 +205,33 @@ namespace MinesweeperClassLibrary
 
         //recursive method to show all of the surrounding cells that boarder the recent cell that was visited
         //and continue to mark them as visited as long as they boarder a cell that has 0 live neighbors
+        //!!!!!!!!!!!!!!!!!!!TODO there is a lag issue in game play. Try to adjust this method to return a List of Cells that were altered so that the ShowInGameBoard method only needs to repopulate the cells that were altered.
         public void FloodFill(Cell cell)
         {
-            //first, mark the cell as visited
-            cell.Visited = true;
-
-            //if the cell has any live neighbors, then return
-            if (cell.LiveNeighbors != 0) return;
-
-            //else continue to call the FloodFill on the surrounding cells
-            for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
+            //only perform if cell does not have a flag
+            if (!cell.Flag)
             {
-                for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
-                {
-                    //ensure row and col are within board paramaters,
-                    //it is not comparing the cell to itself, and it is was not visited before
-                    if (row >= 0 && row < Size && col >= 0 && col < Size && 
-                        Grid[row,col] != cell && Grid[row, col].Visited == false)
 
-                        //call FloodFill again
-                        FloodFill(Grid[row, col]);
-                }
+                //first, mark the cell as visited
+                cell.Visited = true;
+
+                //if the cell has any live neighbors, then return
+                if (cell.LiveNeighbors != 0) return;
+
+                //else continue to call the FloodFill on the surrounding cells
+                for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
+                {
+                    for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
+                    {
+                        //ensure row and col are within board paramaters,
+                        //it is not comparing the cell to itself, and it is was not visited before
+                        if (row >= 0 && row < Size && col >= 0 && col < Size &&
+                            Grid[row, col] != cell && Grid[row, col].Visited == false)
+
+                            //call FloodFill again
+                            FloodFill(Grid[row, col]);
+                    }
+                } 
             }
         }
 
@@ -238,6 +245,8 @@ namespace MinesweeperClassLibrary
                 if (cell.Live) continue;//skip bombs
                 if (!cell.Visited) return false;//if not visited, then no winner yet
             }
+
+            //otherwise all cells are either visited or are bombs: return Winner == true;
             return true;
         }
     }
