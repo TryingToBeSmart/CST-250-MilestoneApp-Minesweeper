@@ -18,3 +18,7 @@ Added GUI using a Windows Forms app.  All of the methods from the console app we
 7/30/23
 Added a stopwatch timer to keep track of gameplay time. Also added the bomb and flag images to a Resource so that they will stay with the application when published.
 Need to fix a lagging issue when gameplay progresses.  I think it's a problem with the ShowInGameBoard() method.  It currently re-populates the entire board after every move.  I'll change it to only make changes to the cells that were modified and that should help with the lag.  I'll try adjusting the FloodFill method to return cells that were modified.
+
+## Milestone 6
+8/6/23
+Added Scoreboard class that saves and loads player stats using file IO.  Scoreboard form shows top 5 PlayerStats using Linq expressions to get and sort data.
