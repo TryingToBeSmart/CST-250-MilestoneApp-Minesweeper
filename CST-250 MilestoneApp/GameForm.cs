@@ -18,19 +18,25 @@ namespace CST_250_MilstoneApp
 {
     public partial class GameForm : Form
     {
-
         Board GameBoard;
         private Button[,] ButtonGrid;
-        int BoardSize;
+        ScoreBoard scoreBoard;
+        int BoardSizeInt;
         int BoardDifficulty;
+        string Difficulty;
+        string BoardSizeString;
         bool Win = false;
         bool GameOver = false;
         static Stopwatch stopwatch = new Stopwatch();
+        long MaxScore;
 
-        public GameForm(string size, string difficulty)
+        public GameForm(string size, string difficulty, ScoreBoard scoreBoard)
         {
             InitializeComponent();
             PopulateGrid(size, difficulty);
+            this.Difficulty = difficulty;
+            this.BoardSizeString = size;
+            this.scoreBoard = scoreBoard;
             stopwatch.Reset();
             stopwatch.Start();
             timer1.Enabled = true;
@@ -45,19 +51,19 @@ namespace CST_250_MilstoneApp
                 case "Small":
                     {
                         this.Size = new Size(427, 550);
-                        BoardSize = 10;
+                        BoardSizeInt = 10;
                         break;
                     }
                 case "Medium":
                     {
                         this.Size = new Size(597, 720);
-                        BoardSize = 20;
+                        BoardSizeInt = 20;
                         break;
                     }
                 case "Large":
                     {
                         this.Size = new Size(858, 970);
-                        BoardSize = 30;
+                        BoardSizeInt = 30;
                         break;
                     }
                 default:
@@ -71,32 +77,35 @@ namespace CST_250_MilstoneApp
                 case "Easy":
                     {
                         BoardDifficulty = 5;
+                        MaxScore = 100;
                         break;
                     }
                 case "Moderate":
                     {
-                        BoardDifficulty = 15;
+                        BoardDifficulty = 10;
+                        MaxScore = 100_000;
                         break;
                     }
                 case "Hard":
                     {
-                        BoardDifficulty = 30;
+                        BoardDifficulty = 15;
+                        MaxScore = 100_000_000;
                         break;
                     }
                 default:
                     break;
             }
 
-            GameBoard = new Board(BoardSize, BoardDifficulty);//construct new board
-            ButtonGrid = new Button[BoardSize, BoardSize];//set the ButtonGrid dimensions
+            GameBoard = new Board(BoardSizeInt, BoardDifficulty);//construct new board
+            ButtonGrid = new Button[BoardSizeInt, BoardSizeInt];//set the ButtonGrid dimensions
             panel1.Width = this.Width - 10;//set the size of the panel to fit inside the form
             panel1.Height = panel1.Width; // make square grid
-            int buttonSize = panel1.Width / BoardSize; // calculate the width of each button
+            int buttonSize = panel1.Width / BoardSizeInt; // calculate the width of each button
 
             //loop to create and place buttons in the panel
-            for (int row = 0; row < BoardSize; row++)
+            for (int row = 0; row < BoardSizeInt; row++)
             {
-                for (int col = 0; col < BoardSize; col++)
+                for (int col = 0; col < BoardSizeInt; col++)
                 {
                     ButtonGrid[row, col] = new Button();
                     //square buttons
@@ -173,14 +182,28 @@ namespace CST_250_MilstoneApp
                         ShowInGameBoard();
                     }
 
-                    //if winner, game over
+                    //if winner, game over, send to Player name form and then add the player to the scoreboard file
                     if (GameBoard.CheckForWinner())
                     {
                         stopwatch.Stop();
                         Win = true;
                         ShowBoard();
-                        MessageBox.Show($"You Win! \nTime: {stopwatch.Elapsed.ToString(@"hh\:mm\:ss\.ff")}");
                         GameOver = true;
+                        MessageBox.Show($"You Win! \nTime: {stopwatch.Elapsed.ToString(@"mm\:ss\.ff")}");
+                        PlayerStats newPlayer = new PlayerStats();
+                        PlayerNameForm playerNameForm = new PlayerNameForm();
+                        if(playerNameForm.ShowDialog() == DialogResult.OK)
+                        {
+                            newPlayer.Name = playerNameForm.PlayerNameTextBox.Text;//get the player's name from the PlayerNameForm
+                            newPlayer.Score = MaxScore - stopwatch.ElapsedMilliseconds / 1000;
+                            newPlayer.Time = stopwatch.Elapsed.ToString(@"mm\:ss\.ff");
+                            newPlayer.Date = DateTime.Now;
+                            newPlayer.Difficulty = Difficulty;
+                            newPlayer.BoardSize = BoardSizeString;
+                            scoreBoard.Add(newPlayer);                            
+                        }
+                        ScoreBoardForm scoreBoardForm = new ScoreBoardForm(scoreBoard);
+                        scoreBoardForm.ShowDialog();
                     }
                 }
             }

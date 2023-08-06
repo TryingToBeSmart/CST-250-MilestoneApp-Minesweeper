@@ -40,6 +40,7 @@ internal static class Program
                 board.PrintBoard();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Sorry there was a bomb there!");
+                Console.ReadLine();
                 continueGame = false;
                 break;
             }
@@ -57,6 +58,7 @@ internal static class Program
                 board.PrintBoard();
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine("!!!!!!!You Win!!!!!!");
+                Console.ReadLine();
                 continueGame = false;
             }
         }

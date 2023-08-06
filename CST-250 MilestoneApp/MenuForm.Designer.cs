@@ -37,6 +37,7 @@
             MediumRadioButton = new RadioButton();
             SmallRadioButton = new RadioButton();
             StartButton = new Button();
+            ScoreBoardButton = new Button();
             DifficultyGroupBox.SuspendLayout();
             SizeGroupBox.SuspendLayout();
             SuspendLayout();
@@ -148,11 +149,26 @@
             StartButton.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
             StartButton.Location = new Point(12, 218);
             StartButton.Name = "StartButton";
-            StartButton.Size = new Size(410, 65);
+            StartButton.Size = new Size(200, 65);
             StartButton.TabIndex = 0;
             StartButton.Text = "Start";
             StartButton.UseVisualStyleBackColor = false;
             StartButton.Click += StartButton_Click;
+            // 
+            // ScoreBoardButton
+            // 
+            ScoreBoardButton.BackColor = SystemColors.MenuText;
+            ScoreBoardButton.FlatAppearance.BorderColor = Color.Lime;
+            ScoreBoardButton.FlatAppearance.MouseDownBackColor = Color.Lime;
+            ScoreBoardButton.FlatStyle = FlatStyle.Flat;
+            ScoreBoardButton.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
+            ScoreBoardButton.Location = new Point(222, 218);
+            ScoreBoardButton.Name = "ScoreBoardButton";
+            ScoreBoardButton.Size = new Size(200, 65);
+            ScoreBoardButton.TabIndex = 2;
+            ScoreBoardButton.Text = "Scores";
+            ScoreBoardButton.UseVisualStyleBackColor = false;
+            ScoreBoardButton.Click += ScoreBoardButton_Click;
             // 
             // MenuForm
             // 
@@ -160,6 +176,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaptionText;
             ClientSize = new Size(434, 292);
+            Controls.Add(ScoreBoardButton);
             Controls.Add(StartButton);
             Controls.Add(SizeGroupBox);
             Controls.Add(DifficultyGroupBox);
@@ -187,5 +204,6 @@
         private RadioButton LargeRadioButton;
         private RadioButton MediumRadioButton;
         private RadioButton SmallRadioButton;
+        private Button ScoreBoardButton;
     }
 }

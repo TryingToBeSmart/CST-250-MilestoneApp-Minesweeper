@@ -211,7 +211,6 @@ namespace MinesweeperClassLibrary
             //only perform if cell does not have a flag
             if (!cell.Flag)
             {
-
                 //first, mark the cell as visited
                 cell.Visited = true;
 
