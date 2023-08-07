@@ -185,6 +185,7 @@
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Margin = new Padding(6, 7, 6, 7);
             Name = "MenuForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Minesweeper";
             DifficultyGroupBox.ResumeLayout(false);
             DifficultyGroupBox.PerformLayout();

@@ -11,11 +11,15 @@ namespace CST_250_MilstoneApp
         public MenuForm()
         {
             InitializeComponent();
+            scoreBoard.ReadFromFile();
         }
 
         //click start button
         private void StartButton_Click(object sender, EventArgs e)
         {
+            StartButton.Text = "Loading...";
+            Application.DoEvents(); // Force UI update
+
             //get the text from the radio buttons
             string size = SizeGroupBox.Controls.Cast<RadioButton>().FirstOrDefault(r => r.Checked).Text;
             string difficulty = DifficultyGroupBox.Controls.Cast<RadioButton>().FirstOrDefault(r => r.Checked).Text;
@@ -26,7 +30,7 @@ namespace CST_250_MilstoneApp
                 this.Hide();
                 gameForm.ShowDialog();
             }
-
+            StartButton.Text = "Start";
             this.Show();
         }
 

@@ -12,11 +12,13 @@ namespace CST_250_MilstoneApp
 {
     public partial class PlayerNameForm : Form
     {
-        public PlayerNameForm()
+        public PlayerNameForm(string time)
         {
             InitializeComponent();
+            TimeLabel.Text += time;
         }
 
+        //close the form 
         private void EnterButton_Click(object sender, EventArgs e)
         {
             this.Close();

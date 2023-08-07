@@ -45,7 +45,7 @@
             SmallGroupBox.ForeColor = Color.Lime;
             SmallGroupBox.Location = new Point(12, 12);
             SmallGroupBox.Name = "SmallGroupBox";
-            SmallGroupBox.Size = new Size(453, 238);
+            SmallGroupBox.Size = new Size(453, 239);
             SmallGroupBox.TabIndex = 0;
             SmallGroupBox.TabStop = false;
             SmallGroupBox.Text = "Small";
@@ -55,7 +55,7 @@
             SmallLabel.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             SmallLabel.Location = new Point(6, 56);
             SmallLabel.Name = "SmallLabel";
-            SmallLabel.Size = new Size(441, 170);
+            SmallLabel.Size = new Size(441, 171);
             SmallLabel.TabIndex = 0;
             // 
             // LargGroupBox
@@ -64,7 +64,7 @@
             LargGroupBox.ForeColor = Color.Lime;
             LargGroupBox.Location = new Point(969, 12);
             LargGroupBox.Name = "LargGroupBox";
-            LargGroupBox.Size = new Size(453, 238);
+            LargGroupBox.Size = new Size(453, 239);
             LargGroupBox.TabIndex = 1;
             LargGroupBox.TabStop = false;
             LargGroupBox.Text = "Large";
@@ -74,7 +74,7 @@
             LargeLabel.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             LargeLabel.Location = new Point(6, 56);
             LargeLabel.Name = "LargeLabel";
-            LargeLabel.Size = new Size(441, 170);
+            LargeLabel.Size = new Size(441, 171);
             LargeLabel.TabIndex = 2;
             // 
             // MediumGroupBox
@@ -83,7 +83,7 @@
             MediumGroupBox.ForeColor = Color.Lime;
             MediumGroupBox.Location = new Point(493, 12);
             MediumGroupBox.Name = "MediumGroupBox";
-            MediumGroupBox.Size = new Size(453, 238);
+            MediumGroupBox.Size = new Size(453, 239);
             MediumGroupBox.TabIndex = 1;
             MediumGroupBox.TabStop = false;
             MediumGroupBox.Text = "Medium";
@@ -93,7 +93,7 @@
             MediumLabel.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point);
             MediumLabel.Location = new Point(6, 56);
             MediumLabel.Name = "MediumLabel";
-            MediumLabel.Size = new Size(441, 170);
+            MediumLabel.Size = new Size(441, 171);
             MediumLabel.TabIndex = 1;
             // 
             // ScoreBoardForm
@@ -101,7 +101,7 @@
             AutoScaleDimensions = new SizeF(15F, 37F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaptionText;
-            ClientSize = new Size(1437, 267);
+            ClientSize = new Size(1437, 268);
             Controls.Add(LargGroupBox);
             Controls.Add(MediumGroupBox);
             Controls.Add(SmallGroupBox);

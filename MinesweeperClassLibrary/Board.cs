@@ -16,7 +16,9 @@ namespace MinesweeperClassLibrary
         public Cell[,] Grid { get; set; }
         public int Difficulty { get; set; }
 
-        public Board() 
+        Random random = new Random();
+
+        public Board()
         {
         }
 
@@ -35,9 +37,9 @@ namespace MinesweeperClassLibrary
                 Grid = new Cell[size, size];
 
                 //Set up cells
-                for(int i = 0; i < size; i++)
+                for (int i = 0; i < size; i++)
                 {
-                    for(int j = 0; j < size; j++)
+                    for (int j = 0; j < size; j++)
                     {
                         Cell cell = new Cell(i, j);
                         Grid[i, j] = cell;
@@ -47,9 +49,7 @@ namespace MinesweeperClassLibrary
 
                 //Calculate and set the LiveNeighbors cell numbers
                 CalculateLiveNeighbors();
-
             }
-            
         }
 
         //A method to randomly initialize the cell with live bombs.
@@ -57,8 +57,7 @@ namespace MinesweeperClassLibrary
         //what percentage of the cells in the grid will be set to "live" status.
         public void SetupLiveCell(Cell cell)
         {
-            Random random = new Random();
-            if(random.Next(100) < Difficulty) cell.Live = true;
+            if (random.Next(100) < Difficulty) cell.Live = true;
         }
 
         //A method to calculate the live neighbors for every cell on the grid.
@@ -89,6 +88,73 @@ namespace MinesweeperClassLibrary
             }
         }
 
+        //Check if selected cell is a live bomb
+        //not using right now
+        public bool CheckForLiveBomb(Cell cell)
+        {
+            if (cell.Live) return true;
+            return false;
+        }
+
+        //recursive method to show all of the surrounding cells that boarder the recent cell that was visited
+        //and continue to mark them as visited as long as they border a cell that has 0 live neighbors
+        public List<Cell> FloodFill(Cell cell)
+        {
+            List<Cell> changedCells = new List<Cell>();
+
+            //only perform if cell does not have a flag
+            if (!cell.Flag)
+            {
+                if (!cell.Visited)
+                {
+                    //first, mark the cell as visited
+                    cell.Visited = true;
+
+                    //add to list
+                    changedCells.Add(cell);
+                }
+
+                //if the cell has any live neighbors, then return
+                if (cell.LiveNeighbors == 0)
+                {
+                    //else continue to call the FloodFill on the surrounding cells
+                    for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
+                    {
+                        for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
+                        {
+                            //ensure row and col are within board parameters,
+                            //it is not comparing the cell to itself, and it was not visited before
+                            if (row >= 0 && row < Size && col >= 0 && col < Size &&
+                                Grid[row, col] != cell && !Grid[row, col].Visited)
+                            {
+                                //add cells to the list
+                                changedCells.AddRange(FloodFill(Grid[row, col]));
+                            }
+                        }
+                    }
+                }
+            }
+
+            return changedCells;
+        }
+
+        //check for winner
+        public bool CheckForWinner()
+        {
+            bool win = false;
+
+            foreach (var cell in Grid)
+            {
+                if (cell.Live) continue;//skip bombs
+                if (!cell.Visited) return false;//if not visited, then no winner yet
+            }
+
+            //otherwise all cells are either visited or are bombs: return Winner == true;
+            return true;
+        }
+
+
+        //++++++++++++Following only for console game++++++++++
         //print board to console
         //for console testing
         //Got help from ChatGPT on creating the boarders
@@ -126,12 +192,12 @@ namespace MinesweeperClassLibrary
                     else
                     {
                         //change console color
-                        Console.ForegroundColor = ConsoleColor.Blue; 
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(" " + cell.LiveNeighbors + " "); // Print the count of live neighbors
                         Console.ForegroundColor = ConsoleColor.Gray;
-                        
+
                     }
-                    
+
                     Console.Write("|"); // Print cell separator
                 }
                 Console.WriteLine($" {row}");
@@ -141,7 +207,6 @@ namespace MinesweeperClassLibrary
             }
         }
 
-        //for console game
         //display either the number of live neighbors or an empty square if there are no live neighbors.
         //If a cell has not been visited, print a question mark.
         public void PrintBoardDuringGame()
@@ -192,61 +257,7 @@ namespace MinesweeperClassLibrary
                 // Print inner horizontal line
                 Console.WriteLine("+" + string.Join("+", Enumerable.Repeat("---", Size)) + "+");
             }
- 
-        }
 
-        //Check if selected cell is a live bomb
-        //not using right now
-        public bool CheckForLiveBomb(Cell cell)
-        {
-            if(cell.Live) return true;
-            return false;
-        }
-
-        //recursive method to show all of the surrounding cells that boarder the recent cell that was visited
-        //and continue to mark them as visited as long as they boarder a cell that has 0 live neighbors
-        //!!!!!!!!!!!!!!!!!!!TODO there is a lag issue in game play. Try to adjust this method to return a List of Cells that were altered so that the ShowInGameBoard method only needs to repopulate the cells that were altered.
-        public void FloodFill(Cell cell)
-        {
-            //only perform if cell does not have a flag
-            if (!cell.Flag)
-            {
-                //first, mark the cell as visited
-                cell.Visited = true;
-
-                //if the cell has any live neighbors, then return
-                if (cell.LiveNeighbors != 0) return;
-
-                //else continue to call the FloodFill on the surrounding cells
-                for (int row = cell.Row - 1; row <= cell.Row + 1; row++)
-                {
-                    for (int col = cell.Col - 1; col <= cell.Col + 1; col++)
-                    {
-                        //ensure row and col are within board paramaters,
-                        //it is not comparing the cell to itself, and it is was not visited before
-                        if (row >= 0 && row < Size && col >= 0 && col < Size &&
-                            Grid[row, col] != cell && Grid[row, col].Visited == false)
-
-                            //call FloodFill again
-                            FloodFill(Grid[row, col]);
-                    }
-                } 
-            }
-        }
-
-        //check for winner
-        public bool CheckForWinner()
-        {
-            bool win = false;
-
-            foreach (var cell in Grid)
-            {
-                if (cell.Live) continue;//skip bombs
-                if (!cell.Visited) return false;//if not visited, then no winner yet
-            }
-
-            //otherwise all cells are either visited or are bombs: return Winner == true;
-            return true;
         }
     }
 }

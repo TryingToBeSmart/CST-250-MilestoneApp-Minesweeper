@@ -31,13 +31,14 @@
             PlayerNameTextBox = new TextBox();
             label1 = new Label();
             EnterButton = new Button();
+            TimeLabel = new Label();
             SuspendLayout();
             // 
             // PlayerNameTextBox
             // 
             PlayerNameTextBox.BackColor = SystemColors.InactiveCaptionText;
             PlayerNameTextBox.ForeColor = Color.Lime;
-            PlayerNameTextBox.Location = new Point(12, 52);
+            PlayerNameTextBox.Location = new Point(30, 92);
             PlayerNameTextBox.MaxLength = 8;
             PlayerNameTextBox.Name = "PlayerNameTextBox";
             PlayerNameTextBox.Size = new Size(321, 46);
@@ -47,7 +48,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(59, 9);
+            label1.Location = new Point(77, 49);
             label1.Name = "label1";
             label1.Size = new Size(232, 40);
             label1.TabIndex = 1;
@@ -59,7 +60,7 @@
             EnterButton.FlatAppearance.BorderColor = Color.Lime;
             EnterButton.FlatAppearance.MouseDownBackColor = Color.Lime;
             EnterButton.FlatStyle = FlatStyle.Flat;
-            EnterButton.Location = new Point(78, 104);
+            EnterButton.Location = new Point(96, 144);
             EnterButton.Name = "EnterButton";
             EnterButton.Size = new Size(193, 58);
             EnterButton.TabIndex = 2;
@@ -67,13 +68,23 @@
             EnterButton.UseVisualStyleBackColor = true;
             EnterButton.Click += EnterButton_Click;
             // 
+            // TimeLabel
+            // 
+            TimeLabel.Location = new Point(-1, 0);
+            TimeLabel.Name = "TimeLabel";
+            TimeLabel.Size = new Size(388, 40);
+            TimeLabel.TabIndex = 3;
+            TimeLabel.Text = "Completion Time: ";
+            TimeLabel.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // PlayerNameForm
             // 
             AcceptButton = EnterButton;
             AutoScaleDimensions = new SizeF(16F, 40F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ActiveCaptionText;
-            ClientSize = new Size(345, 181);
+            ClientSize = new Size(386, 215);
+            Controls.Add(TimeLabel);
             Controls.Add(EnterButton);
             Controls.Add(label1);
             Controls.Add(PlayerNameTextBox);
@@ -82,7 +93,7 @@
             Margin = new Padding(7, 8, 7, 8);
             Name = "PlayerNameForm";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Player Name";
+            Text = "Winner!";
             ResumeLayout(false);
             PerformLayout();
         }
@@ -91,5 +102,6 @@
         private Label label1;
         private Button EnterButton;
         public TextBox PlayerNameTextBox;
+        private Label TimeLabel;
     }
 }

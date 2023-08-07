@@ -39,7 +39,6 @@ namespace CST_250_MilstoneApp
             this.scoreBoard = scoreBoard;
             stopwatch.Reset();
             stopwatch.Start();
-            timer1.Enabled = true;
         }
 
         private void PopulateGrid(string size, string difficulty)
@@ -69,7 +68,6 @@ namespace CST_250_MilstoneApp
                 default:
                     break;
             }
-
 
             //set difficulty of board
             switch (difficulty)
@@ -101,6 +99,7 @@ namespace CST_250_MilstoneApp
             panel1.Width = this.Width - 10;//set the size of the panel to fit inside the form
             panel1.Height = panel1.Width; // make square grid
             int buttonSize = panel1.Width / BoardSizeInt; // calculate the width of each button
+            Font buttonFont = new Font("Arial", buttonSize / 2f, FontStyle.Bold);
 
             //loop to create and place buttons in the panel
             for (int row = 0; row < BoardSizeInt; row++)
@@ -119,7 +118,7 @@ namespace CST_250_MilstoneApp
                     ButtonGrid[row, col].FlatAppearance.MouseDownBackColor = Color.DarkSeaGreen;
                     ButtonGrid[row, col].ForeColor = Color.Lime;
                     ButtonGrid[row, col].BackgroundImageLayout = ImageLayout.Zoom;
-                    ButtonGrid[row, col].Font = new Font("Arial", float.Parse(buttonSize.ToString()) / 2, FontStyle.Bold);
+                    ButtonGrid[row, col].Font = buttonFont;
                     ButtonGrid[row, col].MouseDown += Grid_Button_MouseDown;
                     //ButtonGrid[row, col].Click += Grid_Button_Click;// add click event to each button
                     panel1.Controls.Add(ButtonGrid[row, col]);// place button on panel
@@ -129,6 +128,9 @@ namespace CST_250_MilstoneApp
                     ButtonGrid[row, col].Tag = row.ToString() + "|" + col.ToString();
                 }
             }
+
+            //start timer after everything else if completed
+            timer1.Enabled = true;
         }
 
         //The method has an important
@@ -148,38 +150,42 @@ namespace CST_250_MilstoneApp
                 int col = int.Parse(stringArray[1]);
 
                 Cell currentCell = GameBoard.Grid[row, col];
+                List<Cell> cells = new List<Cell>();
 
                 //if right button was clicked, then alternate adding/removing a flag
                 if (e.Button == MouseButtons.Right)
                 {
-                    if (!GameBoard.Grid[row, col].Flag)
+                    if (!currentCell.Visited)
                     {
-                        GameBoard.Grid[row, col].Flag = true;
-                    }
-                    else
-                        GameBoard.Grid[row, col].Flag = false;
+                        if (!currentCell.Flag)
+                        {
+                            currentCell.Flag = true;
+                        }
+                        else
+                            currentCell.Flag = false;
 
-                    ShowInGameBoard();
+                        cells.Add(currentCell);
+                        ShowInGameBoard(cells); 
+                    }
                 }
 
                 //else if left click
                 else
                 {
                     //live bomb clicked, game over
-                    if (GameBoard.Grid[row, col].Live && !GameBoard.Grid[row, col].Flag)
+                    if (currentCell.Live && !currentCell.Flag)
                     {
                         Win = false;
                         timer1.Enabled = false;
                         ShowBoard();
-                        MessageBox.Show("Boom!");
                         GameOver = true;
                     }
 
                     //continue game
                     else
                     {
-                        GameBoard.FloodFill(currentCell);
-                        ShowInGameBoard();
+                        List<Cell> changedCells = GameBoard.FloodFill(currentCell);
+                        ShowInGameBoard(changedCells);
                     }
 
                     //if winner, game over, send to Player name form and then add the player to the scoreboard file
@@ -189,9 +195,8 @@ namespace CST_250_MilstoneApp
                         Win = true;
                         ShowBoard();
                         GameOver = true;
-                        MessageBox.Show($"You Win! \nTime: {stopwatch.Elapsed.ToString(@"mm\:ss\.ff")}");
                         PlayerStats newPlayer = new PlayerStats();
-                        PlayerNameForm playerNameForm = new PlayerNameForm();
+                        PlayerNameForm playerNameForm = new PlayerNameForm(stopwatch.Elapsed.ToString(@"mm\:ss\.ff"));
                         if(playerNameForm.ShowDialog() == DialogResult.OK)
                         {
                             newPlayer.Name = playerNameForm.PlayerNameTextBox.Text;//get the player's name from the PlayerNameForm
@@ -200,7 +205,8 @@ namespace CST_250_MilstoneApp
                             newPlayer.Date = DateTime.Now;
                             newPlayer.Difficulty = Difficulty;
                             newPlayer.BoardSize = BoardSizeString;
-                            scoreBoard.Add(newPlayer);                            
+                            scoreBoard.Add(newPlayer);
+                            scoreBoard.WriteToFile(newPlayer);
                         }
                         ScoreBoardForm scoreBoardForm = new ScoreBoardForm(scoreBoard);
                         scoreBoardForm.ShowDialog();
@@ -210,28 +216,28 @@ namespace CST_250_MilstoneApp
         }
 
         //print updated board for gameplay
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!TODO adjust so that only the cells that were changed get repopulated.  Currently all cells get repopulated after every move.  There is a lag issue.
-        //also adjust FloodFill method in Board class to return a List of cells that were altered.
-        private void ShowInGameBoard()
+        private void ShowInGameBoard(List<Cell> changedCells)
         {
-            foreach (var cell in GameBoard.Grid)
+            foreach (var cell in changedCells)
             {
-                if (cell.Visited)
-                {
-                    ButtonGrid[cell.Row, cell.Col].FlatAppearance.BorderSize = 0;
-                    //only print numbers of live neighbors != 0; leave 0s blank
-                    if (GameBoard.Grid[cell.Row, cell.Col].LiveNeighbors != 0)
-                    {
-                        ButtonGrid[cell.Row, cell.Col].Text = GameBoard.Grid[cell.Row, cell.Col].LiveNeighbors.ToString();
-                    }
-                }
+                Button button = ButtonGrid[cell.Row, cell.Col];
 
                 //check for flags
-                else if (cell.Flag)
-                    ButtonGrid[cell.Row, cell.Col].BackgroundImage = new Bitmap(Resource1.flag);
+                if (cell.Flag)
+                    button.BackgroundImage = new Bitmap(Resource1.flag);
+                else if (!cell.Flag)
+                    button.BackgroundImage = null;
 
-                else
-                    ButtonGrid[cell.Row, cell.Col].BackgroundImage = null;
+                //add live neighbor numbers
+                if(cell.Visited)
+                {
+                    button.FlatAppearance.BorderSize = 0;
+                    //print the number of live neighbors in the button
+                    if (cell.LiveNeighbors != 0)
+                        button.Text = cell.LiveNeighbors.ToString();
+                    else
+                        button.Text = string.Empty;
+                }
             }
         }
 
@@ -240,25 +246,32 @@ namespace CST_250_MilstoneApp
         {
             foreach (var cell in GameBoard.Grid)
             {
-                if (cell.Live && !Win)
-                {
-                    //show bombs if loss
-                    ButtonGrid[cell.Row, cell.Col].BackgroundImage = new Bitmap(Resource1.bomb);
-                    ButtonGrid[cell.Row, cell.Col].BackColor = Color.Red;
-                    ButtonGrid[cell.Row, cell.Col].FlatAppearance.MouseOverBackColor = Color.DarkRed;
-                }
-                else if (cell.Live && Win)
-                {
-                    //show flags if win
-                    ButtonGrid[cell.Row, cell.Col].BackgroundImage = new Bitmap(Resource1.flag);
-                }
-                else
-                {
-                    //only print numbers of live neighbors != 0, leave 0s blank
-                    if (GameBoard.Grid[cell.Row, cell.Col].LiveNeighbors != 0)
-                        ButtonGrid[cell.Row, cell.Col].Text = GameBoard.Grid[cell.Row, cell.Col].LiveNeighbors.ToString();
-                }
+                Button button = ButtonGrid[cell.Row, cell.Col];
 
+                //update the cells that are not visited already, so we don't have to re-show them
+                if (!cell.Visited)
+                {
+                    if (cell.Live && !Win)
+                    {
+                        //show bombs if loss
+                        button.BackgroundImage = new Bitmap(Resource1.bomb);
+                        button.BackColor = Color.Red;
+                        button.FlatAppearance.MouseOverBackColor = Color.DarkRed;
+                    }
+                    else if (cell.Live && Win)
+                    {
+                        //show flags if win
+                        button.BackgroundImage = new Bitmap(Resource1.flag);
+                    }
+                    else
+                    {
+                        //only print numbers of live neighbors != 0, leave 0s blank
+                        if (cell.LiveNeighbors != 0)
+                            button.Text = cell.LiveNeighbors.ToString();
+                        else
+                            button.Text = string.Empty;
+                    } 
+                }
             }
         }
 
