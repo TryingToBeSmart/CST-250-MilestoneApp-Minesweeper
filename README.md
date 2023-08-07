@@ -22,3 +22,6 @@ Need to fix a lagging issue when gameplay progresses.  I think it's a problem wi
 ## Milestone 6
 8/6/23
 Added Scoreboard class that saves and loads player stats using file IO.  Scoreboard form shows top 5 PlayerStats using Linq expressions to get and sort data.
+
+## Milestone 7
+Improved speed of gameplay by adjusting FloodFill and ShowInGameBoard methods.  Now, only the cells that were changed are updated instead of re-displaying the whole board after every cell button click.  Removed generic message boxes.  Changed the Start button to display "Loading" while the gameboard is loading.  Adjusted the ScoreBoard class library to perform all of the data IO and Linq expressions so that the UI ScoreBoardForm has minimal code.
