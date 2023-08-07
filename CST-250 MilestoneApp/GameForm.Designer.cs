@@ -89,7 +89,7 @@
             Controls.Add(MenuButton);
             ForeColor = SystemColors.ButtonFace;
             Name = "GameForm";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Minesweeper";
             ResumeLayout(false);
             PerformLayout();

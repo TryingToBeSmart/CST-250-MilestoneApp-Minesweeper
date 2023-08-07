@@ -165,7 +165,7 @@ namespace CST_250_MilstoneApp
                             currentCell.Flag = false;
 
                         cells.Add(currentCell);
-                        ShowInGameBoard(cells); 
+                        ShowInGameBoard(cells);
                     }
                 }
 
@@ -197,7 +197,7 @@ namespace CST_250_MilstoneApp
                         GameOver = true;
                         PlayerStats newPlayer = new PlayerStats();
                         PlayerNameForm playerNameForm = new PlayerNameForm(stopwatch.Elapsed.ToString(@"mm\:ss\.ff"));
-                        if(playerNameForm.ShowDialog() == DialogResult.OK)
+                        if (playerNameForm.ShowDialog() == DialogResult.OK)
                         {
                             newPlayer.Name = playerNameForm.PlayerNameTextBox.Text;//get the player's name from the PlayerNameForm
                             newPlayer.Score = MaxScore - stopwatch.ElapsedMilliseconds / 1000;
@@ -229,7 +229,7 @@ namespace CST_250_MilstoneApp
                     button.BackgroundImage = null;
 
                 //add live neighbor numbers
-                if(cell.Visited)
+                if (cell.Visited)
                 {
                     button.FlatAppearance.BorderSize = 0;
                     //print the number of live neighbors in the button
@@ -270,7 +270,7 @@ namespace CST_250_MilstoneApp
                             button.Text = cell.LiveNeighbors.ToString();
                         else
                             button.Text = string.Empty;
-                    } 
+                    }
                 }
             }
         }
